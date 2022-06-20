@@ -9,10 +9,6 @@ import { app } from './app';
 
 const port = process.env.PORT;
 
-// app.listen(port, () => {
-//   console.log(`server live at ${port}`);
-// });
-
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -68,4 +64,6 @@ io.on('connection', (socket) => {
   });
 });
 
-export default io;
+app.set('io', io);
+
+// export default io;

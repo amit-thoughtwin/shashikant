@@ -4,6 +4,10 @@ import { v4 as uuid, validate } from 'uuid';
 import { ApiError } from '../service/error';
 // import io from '../socketClient';
 import { getAllUser } from './userController';
+// import io from '../index';
+
+// console.log('i am io');
+// console.log(io);
 
 const { messages, conversation, users } = require('../../models');
 
@@ -62,7 +66,7 @@ export const sendMessage = async (
     if (value === 'blocked') {
       return res.json({
         statusCode: 400,
-        message: 'blocked user can not send request',
+        message: 'blocked user can not send message',
       });
     }
     if (value === 'pending') {
@@ -78,20 +82,22 @@ export const sendMessage = async (
       });
     }
 
-    await messages.create({
+    const createData = await messages.create({
       id: myId,
       to: numberId,
       from: req.id,
       conversationId: cheackFriend.id,
       message: messageTrim,
-      status: 'unedited',
+      state: 'unedited',
     });
-    // io.emit('chat-message', {
-    //   msg: createData.message,
-    //   conversationId: cheackFriend.id,
-    //   userId: req.id,
-    //   recieverId: numberId,
-    // });
+    const io = req.app.get('io');
+    console.log(req.app.get);
+    io.emit('chat-message', {
+      msg: createData.message,
+      conversationId: cheackFriend.id,
+      userId: req.id,
+      recieverId: numberId,
+    });
 
     const messageData = await messages.findAll({
       where: {
@@ -116,11 +122,20 @@ export const sendMessage = async (
         },
       ],
     });
+    await messages.update(
+      { state: 'read' },
+      {
+        where: {
+          to: id,
+          from: req.id,
+        },
+      },
+    );
 
     const { userData } = await getAllUser(userId);
 
     await messages.update(
-      { status: 'read' },
+      { state: 'read' },
       {
         where: {
           to: id,
@@ -154,6 +169,7 @@ export const sendMessage = async (
       recieverId: numberId,
     });
   } catch (e: any) {
+    console.log(e);
     return next(new ApiError(e.message, 404));
   }
 };
@@ -175,7 +191,7 @@ export const seeMessages = async (
     const { userData } = await getAllUser(userId);
 
     await messages.update(
-      { status: 'read' },
+      { state: 'read' },
       {
         where: {
           to: id,
@@ -396,7 +412,7 @@ export const editmessage = async (
     await messages.update(
       {
         message: messageTrim,
-        status: 'edited',
+        state: 'edited',
       },
       {
         where: {

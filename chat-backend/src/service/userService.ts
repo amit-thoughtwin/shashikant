@@ -30,7 +30,7 @@ export const tokenVarify = async (
     await jwt.verify(token, secretKey, async (error: any, payload: any) => {
       if (payload) {
         console.log(payload.fullName);
-
+        // req.user = payload;
         req.id = payload.id;
         req.fullName = payload.fullName;
         next();

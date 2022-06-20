@@ -325,6 +325,18 @@ export const searchFriend = async (
     const loginId = req.id;
     const { userData } = await getAllUser(userId);
     const friendRequests = await friendRequestCount(userId);
+    // return res.render('test', {
+    //   data: userData,
+    //   userId: loginId,
+    //   userName: req.fullName,
+    //   conversationId: '',
+    //   chatWith: '',
+    //   showmessages: [],
+    //   sendMessage: '',
+    //   recieverId: '',
+    //   friendRequest: '',
+    //   seeRequest: friendRequests,
+    // });
     return res.render('test', {
       data: userData,
       userId: loginId,

@@ -15,5 +15,5 @@ friendRequestRoutes.get('/sendRequest/:id', tokenVarify, sendFriendRequest);
 friendRequestRoutes.get('/friendrequest', tokenVarify, seeFriendRequest);
 friendRequestRoutes.get('/acceptRequest/:id', tokenVarify, friendRequestAccept);
 friendRequestRoutes.get('/reject/:id', tokenVarify, friendRequestReject);
-friendRequestRoutes.patch('/user/block/:id', tokenVarify, blockMessage);
+friendRequestRoutes.get('/user/block/:id', tokenVarify, blockMessage);
 friendRequestRoutes.get('/user/unFriend/:id', tokenVarify, unFriend);

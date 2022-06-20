@@ -230,6 +230,7 @@ export const friendRequestAccept = async (
         return next(new ApiError('already accepted ', 400));
       }
 
+      console.log('<<<');
       if (value === 'pending' && match === true) {
         await conversation.update(
           { state: 'accepted' },
@@ -394,6 +395,7 @@ export const blockMessage = async (req: any, res: Response) => {
     const { id } = req.params;
     const numberId: any = id.replace(/[' "]+/g, '');
     const checkId = validate(numberId);
+    console.log('BLOCK', req.id, numberId);
     if (checkId === false) {
       return res.json({
         statusCode: 400,

@@ -36,6 +36,7 @@ app.set('views', path.join(__dirname, 'views/pages'));
 app.use(express.static(`${__dirname}/views/pages`));
 app.use(express.static(`${__dirname}/views/image`));
 app.use(express.static(`${__dirname}/views/css`));
+app.use(express.static(`${__dirname}/views/js`));
 app.use('/*', pageNotFound);
 app.use(errors);
 // eslint-disable-next-line prefer-destructuring

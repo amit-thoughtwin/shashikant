@@ -11,18 +11,18 @@
 }
 body,
 html {
-  display: flex;
+display: flex; 
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
   height: 100%;
-  background-color: #232323;
+  background-color: #232323; 
 }
 .container {
   display: flex;
-  width: 900px;
-  height: 85%;
+  width: 100%;
+  height: 94%;
   background-color: #ffffff;
 }
 .left {
@@ -282,7 +282,7 @@ html {
 .clip {
   display: flex;
 }
-.clip > .text {
+/* .clip > .text {
   font-family: 'Open Sans';
   font-size: 14px;
   font-weight: 400;
@@ -292,6 +292,13 @@ html {
   word-break: break-word;
   white-space: pre-wrap;
   word-wrap: keep-all;
+} */
+.timestampmsg{
+  font-weight: 400;
+  font-size: x-small;
+  float: right;
+  margin-top: 8px;
+
 }
 .received > .text {
   background-color: #fff;
@@ -495,6 +502,11 @@ body {
   opacity: 1;
 }
 #logOut:hover {
+  border: 3px dotted #ff7a59;
+  color: #ff7a59;
+  background: #fff;
+}
+#block:hover{
   border: 3px dotted #ff7a59;
   color: #ff7a59;
   background: #fff;
