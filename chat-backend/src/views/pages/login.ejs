@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/login.css" />
+    <link rel="icon" href="https://i.pinimg.com/originals/da/c4/bf/dac4bfad9993da7eddada931ebedc3e1.jpg">
+    <title>chat-backend</title>
+  </head>
+  <body>
+    <div id="pageloader">
+       <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." />
+    </div>
+    <form class="box" id="myForm" action="/api/auth/user/signup" method="post">
+      <%-msg%>
+      
+      <h1>Login</h1> 
+      <input type="text" name="email" placeholder="email" required >
+      <input type="password" name="password" placeholder="Password" required >
+      
+      <input id="value" type="hidden" value="false">  
+      <button id="myButton" type="submit" style="padding-right: 43% ;padding-left: 36%; display: flex; justify-content: space-between; " > Login 
+            <!-- <img id="loader" src="/Spin-1s-64px (1).gif"  style="height: 24px; width:24px; display: inline;" alt=""> -->
+          </button> 
+          <!-- <a href="/google" class="login-with-google-btn" >
+              Sign in with Google
+          </a> -->
+          </form>
+    
+    <div class="lines">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+    
+    
+    
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+
+// $(document).ready(function(){
+//   $("#myForm").on("submit", function(){
+//     $("#pageloader").fadeIn();
+//   });
+// });
+
+
+const loader = document.getElementById("loader")
+
+const inputValue = document.getElementById("value").value
+
+if(inputValue === "false"){
+  window.onload = function(){ document.getElementById("loader").style.display = "none" }
+}
+
+const myForm = document.getElementById("myForm")
+
+const myButton = document.getElementById("myButton")
+
+// myButton.addEventListener("submit", (e)=>{
+//   e.preventDefault()
+//   inputValue.innerText = "true"
+//   setTimeout(()=>{
+//   },3000)
+//   window.onload = function(){ document.getElementById("loader").style.display = "inline" }
+// })
+
+
+  
+</script>
+
+</html>
+
+
+
+
