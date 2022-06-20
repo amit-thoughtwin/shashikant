@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat-backend</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script defer src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous">     
+    </script>
+    <link rel="stylesheet" href="/message.css">
+    <link rel="icon" href="https://i.pinimg.com/originals/da/c4/bf/dac4bfad9993da7eddada931ebedc3e1.jpg">
+</head>
+<body>
+  <div class="container">
+
+    <div class="left">
+        <div class="top">
+            <div class="tub">
+                <div class="username">Chat with:- <%-chatWith%> </div> 
+                <input type="hidden" id="reciever_Id" value="<%=recieverId%>" >
+                   </div>
+            <div class="card"> 
+                <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary latest" data-toggle="modal" data-target="#exampleModal">
+   new
+  </button>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         
+            <div class="input-group mb-3">
+                <input id="search" type="search" name="search" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary search">search</button>
+                </div>
+              </div>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="body2">
+        </div>
+
+        <div class="modal-footer">
+           
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+               
+        </div>
+        </div>
+        <div class="conversations">
+            <%-friendRequest%>
+                <% for(var i=0; i<data.length; i++) { %>
+            <div class="person">
+                <div class="box">
+                    <div class="image"> <img class="avatar" alt="Avatar" src=" " name = "<%-data[i].fullName%>" width="50px" height="50px" alt=""> </div>
+                    <div class="online"></div>
+                </div>
+                <div class="information">
+                    <div class="username" style="display:flex; justify-content:space-between" >
+                        <div>
+                            <a class="userName1"  href='/api/conversation/message/<%- data[i].id%>'><%= data[i].fullName %></a>
+                            <div id="<%-data[i].id%>count" style=
+                            "height: 25px;
+                            width: 25px;
+                            display: inline-block;
+                            border: 1px solid black;
+                            margin: auto;
+                            border-radius: 50%;
+                            background-color: #ff9f9f;
+                            padding-left: 5%;
+                            margin-left: 0%;" ></div>
+                            <p id="<%-data[i].id%>"><%-data[i].lastMessage%></p>
+                            <input class="allUserId" type="hidden" value="<%-data[i].id%>" >
+                        </div>
+                         <div>
+                             <a  href="/api/user/unFriend/<%- data[i].id%>">
+                                 <img class="shahiImage" src="/icons8-user-48.png">
+                                </a>
+                         </div>
+                    </div>
+                </div>
+              
+            </div>
+            <% } %>
+            
+        </div>
+    </div>
+    
+    <div class="right">
+        <div class="top"  >
+            <div class="box">
+         </div>
+            <div class="information">
+                <div class="username"> <a href="https://www.instagram.com/thecolorlesseyes/"><%-userName%></a></div>
+                <div class="name"><p style="color: rgb(4, 121, 86);">Active now</p></div>
+            </div>
+
+
+            <div class="options">
+                       <p>
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            &bull;&bull;&bull;
+                        </button>
+                      </p>
+
+                       <!-- <h1 style="width:70% ;" ><%-userName%></h1> -->
+                      <div class="collapse" id="collapseExample">
+                        <div class="card card-body" style="margin-top:40%; display: flex; padding-bottom: 57%; margin-top: 57%; flex-direction: column;width: 106px;height: 55px;">
+                            <div class="seeFriendRequestParent" >
+ <a class="seeFriendRequest" href="/api/friendrequest"><i class="bi bi-bell-fill"></i></a><span style="color: red; font-weight: 700;" ><%-seeRequest.length%></span>
+      <a id="logOut" href="/api/auth/user/logOut"  style="color: black;text-align: center;text-decoration: none;"> logOut</a>
+                            </div>
+                        </div>
+                      </div>
+              </div>
+        </div>
+        <div class="middle">
+            <div class="tumbler" id="appendDiv">
+                <div class="messages" id="two">
+                        <% for(var i=0; i<showmessages.length; i++) {%>
+                        <% if(showmessages[i].from === userId){%>
+                        <div class="clip sent">
+                            <span class="text1">
+                                <%=showmessages[i].timeZone%>
+                            </span>
+                            <div class="text"><%= showmessages[i].message%>
+                                <% if (showmessages[i].status === "read") { %>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#4fc3f7"/></svg>
+                                    <%} else { %>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#434c54"/></svg>
+                                        <% } %>    
+                        </div>
+                        </div>
+                        <% } %> 
+
+                       <% if(showmessages[i].to === userId ){%>
+                        <div class="clip received">
+                            <span class="text1">
+                                <%=showmessages[i].timeZone%>
+                            </span>
+                            <div class="text"><%= showmessages[i].message%>
+                                <% if (showmessages[i].status === "read") { %>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#4fc3f7"/></svg>
+                                    <%} else { %>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#434c54"/></svg>
+                                        <% } %>                            
+                        </div>
+                        </div>
+                        <% }%>
+
+                        <% } %> 
+                       
+                    </div>
+            </div>
+
+
+        </div>
+  
+        <div class="bottom">
+            <div class="cup">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIEAAACBCAMAAADQfiliAAAAZlBMVEX///8AAADk5OQiIiK0tLTX19d8fHzq6ura2trn5+f6+vpDQ0Py8vI3Nzfu7u4bGxsWFhbIyMgRERG9vb2np6eUlJRQUFBLS0tXV1cqKirR0dFjY2OcnJyMjIxcXFxqampycnKEhIQ2NWOsAAADuklEQVR4nO2b67qqIBCGww4aHshS81Tm/d/kTjlEy6UoOO5n74fvn2sVvMIwwMy021lZWf0Pwq5XOsHf6t1Lmj2iKpqDs3X3QZJdkSySJ1uOBU5CNFSY4K0A4t/67xniTfrH7Uj/ndoNhiGqJgAQqiJwgPskAEJ3aIQxE5CMARYgVwIglEMCpDMAEErhAMpZAAiVYAT+TAIfCuAwEwChAxDBXt010x4GIJ4NgBCMe34tIGggAIKruuOPIDzjkkmAmYbHIoIHAMH0nvhTz/UBcLaI4L7+mS1S74qyQnd1gnOxiKBY//DszPeInfaWwBJYAktgCSyBJbAElsASWAJLAE3gll5gRBB4pdH9rSbvO+jRgOB4R4jU+gAJbc3VJnDpQ6ILgAlt4KFNwKIeRDfmf2atvbQJePDrrEngstjVU4Og6DtlgfCrrjHy6FnWDeLC+EEfwcAsGXHVDajgC23A7wiCuUFlqnv3HcziLhft3E8hv8JzEUHVDyJ7KHQBRD6jt6rTIoK2+4rDHvRzHi1r4dY93BYRfH2l1SZI5BaiRQSB/AbaHknkVPrFsCik2Ue2+VIwyLmIGKLXPc1PcLBJ8NhDaBDm5q9No8QLCPrP80h0pQ8gDCHsp6GeDdDvhtwbGJjBZznRUQ3mBnbD3g7F4jE6rDSsEZo9m7sge16RmTPLt4g+acainQVAl7/IiNyMCLhjZpaAVXnvTnf6UT5l+i6ZitsiNa6dS5QAhG7FwmxN7LBTILqk8+CoEAi1OzEHxDjVIQaBUL9ynt6lfXocigSo6RC851Mk/Kkp7PDUJvlinxHr9rlCWcgn4d6w1pKxA9uevTBuxJ+O5gBymo+94c5tfwVozwMAg6uCrM8S9PkeE6U//WOYiv99LGWtcgzpkEpELhV7aR7Sg+QlzFNPzHf8WS3Fagm3WEo519LqipwyvsWlI+2+gbR9kRVrMeQNwZ9qt5TXqqE7HkdA2VhaO/7Ky64K8Ea4yI37yfAedk6+fNV1ZYD3+33fmfZVXUbc+nBU1tW3kygA0v/O0B2H1evUnl7V8OTiw1RMtoOOxqR/QVAonlcBMGqpKwjX6mKUaw1boxioStNS+HJVnIzPRbZRqep7S8iGGzTJpM1hAzm3RxVyL3UJq8dt84rlTvwmCVUIZwksgSWwBJbAEliCf4TAS09cPLySi7+kHjyAiCuNyDxupJCnAGBxeECpo9srBW5Gpa4dh6gXl6VOc0AvDKxKO/rgdwZn+idN+RbXhug4LvBftVlZWcHpD7ATMLL+x5COAAAAAElFTkSuQmCC"  style="width: 6%;height: 1%;" alt="">
+            <form class="cup" action="/api/conversation/message/<%=recieverId%>" method="post">
+                    <input type="text" class="mytextArea" id="message" name="message" cols="30"  rows="1" placeholder="Message..." autocomplete="on" required>
+                    <!-- <i class="bi bi-emoji-smile-upside-down" id="myTextArea"></i> -->
+                    <input type="hidden" id="recieverId" value="<%=recieverId%>" >
+                     <input type="hidden", id="senderId", value="<%=userId%>">
+                    <button type="submit" class="send">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+<script src="/socket.io/socket.io.js"></script>
+<script>  
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+
+
+// document.querySelector('emoji-picker')
+//   .addEventListener('emoji-click', event => console.log(event.detail));
+
+
+
+// tinymce.init({
+//     selector: ".mytextArea",
+//     plugins: "emoticons",
+//     toolbar: "emoticons",
+//     toolbar_location: "top",
+//     menubar: false
+// });
+
+    const socket = io()
+    const mailDiv = document.getElementById('message')
+
+socket.on("connection", ()=>{
+    console.log("connected");
+})
+
+socket.on("join-room",(conversationId)=>{
+
+    console.log("client side",conversationId);
+})
+
+
+    mailDiv.addEventListener("keypress",()=>{
+        socket.emit('typing','typing...')
+    })
+    socket.on('typing',function(data){
+        const senderId = document.getElementById("senderId").value
+        const recieversId = document.getElementById("recieverId").value
+
+        if(senderId&&recieversId){
+
+            document.querySelector('p').innerHTML = data 
+        }
+
+    })
+    mailDiv.addEventListener("blur",(e)=>{
+        socket.emit('stopTyping','typing...')
+    })
+    socket.on('stopTyping',function(data){
+       const active =  document.querySelector('p')
+       active.innerHTML = 'Active now' 
+    })
+
+     socket.on("sendRequest",(data)=>{
+        const{senderId, recieverId} = data
+
+     })
+     let countData = []
+
+     socket.on('chat-message',(data)=>{  
+         const{ msg, conversationId,userId, recieverId }  = data;
+         const real =  countData.push(msg)
+        const textUnderName = document.getElementById(userId);
+        textUnderName.innerText = msg
+        const countID = document.getElementById(`${userId}count`)
+         countID.innerText = real
+        const senderId = document.getElementById("senderId").value
+        const recieversId = document.getElementById("recieverId").value 
+        if(senderId===recieverId && recieversId ===userId){
+        const mailDiv = document.getElementById('two')
+        const para = document.createElement("div");
+        para.className = "clip received"
+        const paraTwo = document.createElement("div");
+        paraTwo.className = "text"
+        const h1 = document.createElement("p");
+        h1.className = "text"
+        h1.innerText = msg
+        paraTwo.appendChild(h1)
+        para.appendChild(paraTwo)
+        mailDiv.appendChild(para)
+        }
+
+    })
+
+const search = document.querySelector(".search")
+search.addEventListener("click", async (e)=>{
+ const inputSearch = document.querySelector("#search")   
+await fetch(`/api/auth/user/searchFriendForSpecificUser?search=${inputSearch.value}`).then((result)=>{
+  return result.json()
+
+}).then((result1)=>{
+    const body2 =  document.getElementById("body2")
+    let html;
+      if(result1.data.length==0){
+        const html2 = `<h1 style="color: black;"> No user found </h1>`
+        body2.innerHTML = html2
+      }
+else{
+     result1.data.forEach((element)=>{
+ html +=  ` <div class="row mt-2">
+      <div class="col-lg-6">
+        <i class="fa fa-user-plus" style="font-size:36px;"></i>
+          <a class="text-secondary" href="#">${element.fullName}</a>
+        </div>
+        <div class="col-lg-6">
+          <a class=" btn btn-primary add" href="/api/sendRequest/${element.id}">add Friend </a>
+      </div>
+    </div>`
+        })
+        body2.innerHTML = html
+    }
+})
+})
+
+function generateAvatar(text, foregroundColor, backgroundColor) {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = 200;
+    canvas.height = 200;
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.font = "bold 100px Assistant";
+    context.fillStyle = foregroundColor;
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(text, canvas.width / 2, canvas.height / 2);
+    return canvas.toDataURL("image/png");
+}
+const userName = document.querySelectorAll(".userName")
+const image = document.querySelectorAll(".avatar")
+
+for (i = 0; i < image.length; ++i) {
+ 
+    image[i].src = generateAvatar( image[i].name[0], "white", "#009578");
+}
+
+// $(document).ready(function() {
+// 	$("#message").emojioneArea({
+  	
+// 		pickerPosition: "right",
+//     tonesStyle: "bullet",
+// 		events: {
+//          	keyup: function (editor, event) {d
+//         	}
+//     	}
+// 	});        
+            
+// });
+
+
+</script>
+</body>
+</html>
