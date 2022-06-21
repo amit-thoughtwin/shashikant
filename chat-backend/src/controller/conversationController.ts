@@ -36,6 +36,7 @@ export const sendFriendRequest = async (
         showmessages: [],
         sendMessage: '',
         recieverId: numberId,
+        message: '',
         friendRequest: 'you can not send request',
       });
     }
@@ -49,6 +50,7 @@ export const sendFriendRequest = async (
         seeRequest: '',
         userName: req.fullName,
         showmessages: [],
+        message: '',
         sendMessage: '',
         recieverId: numberId,
         friendRequest: 'no user found',
@@ -71,6 +73,7 @@ export const sendFriendRequest = async (
           conversationId: '',
           chatWith: '',
           seeRequest: '',
+          message: '',
           showmessages: [],
           userName: req.fullName,
           sendMessage: '',
@@ -85,6 +88,7 @@ export const sendFriendRequest = async (
           conversationId: '',
           chatWith: '',
           seeRequest: '',
+          message: '',
           showmessages: [],
           sendMessage: '',
           userList: [],
@@ -99,6 +103,7 @@ export const sendFriendRequest = async (
           conversationId: '',
           chatWith: '',
           seeRequest: '',
+          message: '',
           userName: req.fullName,
           showmessages: [],
           sendMessage: '',
@@ -113,6 +118,7 @@ export const sendFriendRequest = async (
           conversationId: '',
           chatWith: '',
           seeRequest: '',
+          message: '',
           userName: req.fullName,
           showmessages: [],
           sendMessage: '',
@@ -127,6 +133,7 @@ export const sendFriendRequest = async (
           userId: req.id,
           conversationId: '',
           chatWith: '',
+          message: '',
           userName: req.fullName,
           seeRequest: '',
           showmessages: [],
@@ -168,6 +175,7 @@ export const sendFriendRequest = async (
         userId: req.id,
         conversationId: '',
         chatWith: '',
+        message: '',
         userName: req.fullName,
         seeRequest: '',
         showmessages: [],
@@ -420,8 +428,17 @@ export const blockMessage = async (req: any, res: Response) => {
         state: 'blocked',
       });
 
-      return res.json({
-        statusCode: 200,
+      return res.render('test', {
+        data: [],
+        userId: req.id,
+        conversationId: '',
+        chatWith: '',
+        seeRequest: '',
+        showmessages: [],
+        userName: req.fullName,
+        sendMessage: '',
+        recieverId: numberId,
+        friendRequest: '',
         message: 'user blocked successfully',
       });
     }
@@ -437,8 +454,17 @@ export const blockMessage = async (req: any, res: Response) => {
             },
           },
         );
-        return res.json({
-          statusCode: 200,
+        return res.render('test', {
+          data: [],
+          userId: req.id,
+          conversationId: '',
+          chatWith: '',
+          seeRequest: '',
+          showmessages: [],
+          userName: req.fullName,
+          sendMessage: '',
+          recieverId: numberId,
+          friendRequest: '',
           message: 'user un-blocked successfully',
         });
       }
@@ -451,8 +477,17 @@ export const blockMessage = async (req: any, res: Response) => {
           },
         },
       );
-      return res.json({
-        statusCode: 200,
+      return res.render('test', {
+        data: [],
+        userId: req.id,
+        conversationId: '',
+        chatWith: '',
+        seeRequest: '',
+        showmessages: [],
+        userName: req.fullName,
+        sendMessage: '',
+        recieverId: numberId,
+        friendRequest: '',
         message: 'user blocked successfully',
       });
     }

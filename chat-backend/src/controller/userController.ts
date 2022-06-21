@@ -8,6 +8,7 @@ import { ApiError } from '../service/error';
 import { html, createOtp } from '../service/otpTemplate';
 import { sendMail } from '../service/userService';
 
+// const socket = require('../socketIo');
 const { users, conversation, messages } = require('../../models');
 
 dotenv.config();
@@ -44,7 +45,7 @@ export const getAllUser = async (userId: any) => {
           recieverId: userId,
         },
       ],
-      state: ['accepted'],
+      state: ['accepted', 'blocked'],
     },
   });
 
@@ -99,7 +100,7 @@ export const getAllUser = async (userId: any) => {
   return true;
 };
 
-export const signup = async (req: Request, res: any, next: NextFunction) => {
+export const signup = async (req: any, res:Response, next: NextFunction) => {
   try {
     const myId = uuid();
     const secretKey: any = process.env.SECRET_KEY;
@@ -188,8 +189,6 @@ export const signup = async (req: Request, res: any, next: NextFunction) => {
         });
       }
       if (verified === true) {
-        console.log(findData.fullName);
-
         if (findData.fullName === null) {
           const { fullName }: { fullName: string } = req.body;
           if (!fullName) {
@@ -223,7 +222,7 @@ export const signup = async (req: Request, res: any, next: NextFunction) => {
             },
           });
           const jwtToken = jwt.sign(
-            { id: loginId, fullName: fullNameFind },
+            { id: loginId, fullName: fullNameFind.fullName },
             secretKey,
             {
               expiresIn: '1d',
@@ -233,6 +232,15 @@ export const signup = async (req: Request, res: any, next: NextFunction) => {
             expires: new Date(Date.now() + 9999999),
             httpOnly: false,
           });
+          const io = req.app.get('io');
+          console.log('>>>>>>>>', io.emit('login', {
+            userId: req.id,
+          }));
+
+          // io.emit('login', {
+          //   userId: req.id,
+          // });
+
           const result = `${ngrokUrl}/api/auth/user/searchFriend`;
           const data = result.replace(/ /g, '');
           return res.redirect(data);
@@ -245,9 +253,13 @@ export const signup = async (req: Request, res: any, next: NextFunction) => {
               expiresIn: '1d',
             },
           );
+          const io = req.app.get('io');
           res.cookie('access_token', `${jwtToken}`, {
             expires: new Date(Date.now() + 9999999),
             httpOnly: false,
+          });
+          io.emit('login', {
+            userId: findData.id,
           });
           const result = `${ngrokUrl}/api/auth/user/searchFriend`;
           const data = result.replace(/ /g, '');
@@ -346,6 +358,7 @@ export const searchFriend = async (
       showmessages: [],
       sendMessage: '',
       recieverId: '',
+      message: '',
       friendRequest: '',
       seeRequest: friendRequests,
     });

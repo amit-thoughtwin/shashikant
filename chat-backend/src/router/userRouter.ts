@@ -1,4 +1,5 @@
-import express, { Response, Request } from 'express';
+import express, { Response } from 'express';
+import jwt from 'jsonwebtoken';
 import {
   userSignupValidation,
   userOtpValidation,
@@ -8,20 +9,56 @@ import {
   logOut,
   searchFriend,
   searchFriendForSpecificUser,
+  getAllUser,
+  friendRequestCount,
 } from '../controller/userController';
 import { userVerifiedEmail, tokenVarify } from '../service/userService';
+
+// const socket = require('../socketIo');
 
 export const userRoutes = express.Router();
 
 userRoutes.post('/signup', userSignupValidation, signup);
 
-userRoutes.get('/login', (req: Request, res: Response) => {
-  res.render('login', {
+userRoutes.get('/login', async (req: any, res: Response) => {
+  console.log();
+  const token = req.cookies.access_token;
+  const secretKey:any = process.env.SECRET_KEY;
+  let userId:any;
+  if (token) {
+    // const io = req.app.get('io');
+    // console.log(io.emit('login', {
+    //   userId: req.id,
+    // }));
+
+    await jwt.verify(token, secretKey, async (error: any, payload: any) => {
+      if (payload) {
+        console.log(payload.fullName);
+        userId = payload.id;
+        req.fullName = payload.fullName;
+      }
+    });
+    const loginId = userId;
+    const { userData } = await getAllUser(userId);
+    const friendRequests = await friendRequestCount(userId);
+    return res.render('test', {
+      data: userData,
+      userId: loginId,
+      userName: req.fullName,
+      conversationId: '',
+      chatWith: '',
+      showmessages: [],
+      sendMessage: '',
+      recieverId: '',
+      message: '',
+      friendRequest: '',
+      seeRequest: friendRequests,
+    });
+  }
+  return res.render('login', {
     msg: ' ',
   });
-  return true;
 });
-
 userRoutes.post('/verifyEmail', userOtpValidation, userVerifiedEmail);
 userRoutes.get('/email', (_, res: Response) => {
   res.render('verifyemail');

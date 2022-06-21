@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       otp: DataTypes.INTEGER,
       password: DataTypes.STRING,
       isVerified: DataTypes.BOOLEAN,
+      isOnline: DataTypes.BOOLEAN,
     },
     {
       sequelize,

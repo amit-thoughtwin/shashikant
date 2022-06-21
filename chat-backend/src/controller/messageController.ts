@@ -64,8 +64,17 @@ export const sendMessage = async (
       });
     }
     if (value === 'blocked') {
-      return res.json({
-        statusCode: 400,
+      return res.render('test', {
+        data: [],
+        userId: req.id,
+        conversationId: '',
+        chatWith: '',
+        seeRequest: '',
+        showmessages: [],
+        userName: req.fullName,
+        sendMessage: '',
+        recieverId: numberId,
+        friendRequest: '',
         message: 'blocked user can not send message',
       });
     }
@@ -91,14 +100,12 @@ export const sendMessage = async (
       state: 'unedited',
     });
     const io = req.app.get('io');
-    console.log(req.app.get);
     io.emit('chat-message', {
       msg: createData.message,
       conversationId: cheackFriend.id,
       userId: req.id,
       recieverId: numberId,
     });
-
     const messageData = await messages.findAll({
       where: {
         to: {
@@ -122,27 +129,22 @@ export const sendMessage = async (
         },
       ],
     });
-    await messages.update(
-      { state: 'read' },
-      {
-        where: {
-          to: id,
-          from: req.id,
-        },
-      },
-    );
 
     const { userData } = await getAllUser(userId);
 
-    await messages.update(
-      { state: 'read' },
-      {
-        where: {
-          to: id,
-          from: req.id,
-        },
-      },
-    );
+    // await messages.update(
+    //   { state: 'read' },
+    //   {
+    //     where: {
+    //       to: {
+    //         [Op.or]: [req.id, numberId],
+    //       },
+    //       from: {
+    //         [Op.or]: [req.id, numberId],
+    //       },
+    //     },
+    //   },
+    // );
 
     messageData.forEach((element) => {
       let timeZone = '';
@@ -164,6 +166,7 @@ export const sendMessage = async (
       chatWith: cheackFriend.sender.fullName,
       friendRequest: '',
       seeRequest: '',
+      message: '',
       showmessages: messageData,
       sendMessage: '',
       recieverId: numberId,
@@ -189,17 +192,24 @@ export const seeMessages = async (
     }
 
     const { userData } = await getAllUser(userId);
-
     await messages.update(
       { state: 'read' },
       {
         where: {
-          to: id,
-          from: req.id,
+          to: {
+            [Op.or]: [req.id, numberId],
+          },
+          from: {
+            [Op.or]: [req.id, numberId],
+          },
         },
       },
     );
-
+    const io = req.app.get('io');
+    io.emit('seen-messages', {
+      senderId: req.id,
+      recieverId: numberId,
+    });
     const messageData = await messages.findAll({
       where: {
         to: {
@@ -223,7 +233,6 @@ export const seeMessages = async (
         },
       ],
     });
-
     messageData.forEach((element) => {
       let timeZone = '';
       if (element.createdAt.getHours() > 12) {
@@ -260,6 +269,7 @@ export const seeMessages = async (
       chatWith: user.fullName,
       friendRequest: '',
       seeRequest: '',
+      message: '',
       showmessages: messageData,
       sendMessage: '',
       recieverId: otherUser,

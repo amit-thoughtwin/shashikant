@@ -4,8 +4,9 @@ import http from 'http';
 import { Server } from 'socket.io';
 // import { app } from './app';
 import db from '../models/index';
-
 import { app } from './app';
+
+const { users } = require('../models');
 
 const port = process.env.PORT;
 
@@ -28,14 +29,22 @@ server.listen(port, async () => {
 io.on('connection', (socket) => {
   // socket.send("connected")
   console.log('connected');
+  socket.on('login', async (data) => {
+    console.log(data.userId);
+    await users.update({
+      isOnline: true,
+    }, {
+      where: {
+        id: data.userId,
+      },
+    });
+
+    console.log('dat>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>a');
+  });
 
   socket.on('disconnect', () => {
     console.log('Disconnected');
   });
-
-  // socket.on("join-room",(conversationId)=>{
-  // socket.join(conversationId)
-  // })
 
   socket.on('typing', (msg) => {
     io.emit('typing', msg);
