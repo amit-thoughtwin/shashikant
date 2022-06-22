@@ -54,6 +54,7 @@
     
   </body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 <script>
 
 // $(document).ready(function(){
@@ -61,6 +62,12 @@
 //     $("#pageloader").fadeIn();
 //   });
 // });
+
+
+const socket = io()
+socket.on('logOut',(data)=>{
+socket.emit('logOut',data)
+})
 
 
 const loader = document.getElementById("loader")

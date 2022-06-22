@@ -1,7 +1,9 @@
 // import { app } from "./app";
 import dotenv from 'dotenv';
 import http from 'http';
+// import socketioJwt from 'socketio-jwt';
 import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
 // import { app } from './app';
 import db from '../models/index';
 import { app } from './app';
@@ -9,9 +11,25 @@ import { app } from './app';
 const { users } = require('../models');
 
 const port = process.env.PORT;
+const secretKey:any = process.env.SECRET_KEY;
 
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(
+  server,
+  {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST'],
+      credentials: true,
+    },
+  },
+  // {
+  //   // path: '/socketio',
+  //   transports: [
+  //     'websocket',
+  //   ],
+  // },
+);
 
 dotenv.config();
 server.listen(port, async () => {
@@ -25,27 +43,64 @@ server.listen(port, async () => {
     });
   console.log(`server live at ${port}`);
 });
+// let User = {};
+// io.use(socketioJwt.authorize({
+//   secret: secretKey,
+//   handshake: true,
+//   auth_header_required: true,
+// }));
 
-io.on('connection', (socket) => {
-  // socket.send("connected")
-  console.log('connected');
-  socket.on('login', async (data) => {
-    console.log(data.userId);
+io.on('connection', async (socket) => {
+  let UserId: any;
+  const token:any = socket.handshake.headers.cookie;
+  const myToken = token.split('=')[1];
+
+  await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
+    if (payload) {
+      UserId = payload.id;
+    }
+  });
+  console.log('connect');
+  await users.update({
+    isOnline: true,
+  }, {
+    where: {
+      id: UserId,
+    },
+  });
+  socket.broadcast.emit('online', UserId);
+  // socket.emit('online', UserId);
+  // io.on('authenticated', (socket) => {
+  //   console.log(socket.my_decoded_token); // new decoded token
+  // });
+
+  socket.on('disconnect', async () => {
+    await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
+      if (payload) {
+        UserId = payload.id;
+      }
+    });
+    console.log('disconnect', UserId);
+
     await users.update({
-      isOnline: true,
+      isOnline: false,
+    }, {
+      where: {
+        id: UserId,
+      },
+    });
+    socket.broadcast.emit('offline', UserId);
+  });
+  socket.on('logOut', async (data) => {
+    console.log('i am logout >?????????????', data);
+    await users.update({
+      isOnline: false,
     }, {
       where: {
         id: data.userId,
       },
     });
-
-    console.log('dat>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>a');
   });
-
-  socket.on('disconnect', () => {
-    console.log('Disconnected');
-  });
-
   socket.on('typing', (msg) => {
     io.emit('typing', msg);
   });

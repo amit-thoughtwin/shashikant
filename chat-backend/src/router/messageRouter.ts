@@ -22,7 +22,7 @@ messageRoutes.get('/conversation/chat', (_, res: Response) => {
 });
 messageRoutes.get('/conversation/message/:id', tokenVarify, seeMessages);
 messageRoutes.delete('/conversation/message/:id', tokenVarify, deleteChats);
-messageRoutes.put('/conversation/message/edit/:id', tokenVarify, editmessage);
+messageRoutes.get('/conversation/message/edit/:id', tokenVarify, editmessage);
 
 messageRoutes.delete(
   '/conversation/message/allchat/:id',

@@ -66,9 +66,9 @@
                 <div class="box">
                     <div class="image"> <img class="avatar" alt="Avatar" src=" " name = "<%-data[i].fullName%>" width="50px" height="50px" alt=""> </div>
                     <% if(data[i].isOnline === true){ %>
-                        <div class="online" id ="<%=data[i].id%>"></div>
+                        <div class="online" id ="<%=data[i].id%>online"></div>
                      <% } else{ %>
-                        <div class="" id ="<%=data[i].id%>"></div>
+                        <div class="" id ="<%=data[i].id%>online"></div>
                       <% } %>
                 </div>
                 <div class="information">
@@ -90,9 +90,6 @@
                             <input class="allUserId" type="hidden" value="<%-data[i].id%>" >
                         </div>
                          <div>
-                             <a  href="/api/user/unFriend/<%- data[i].id%>">
-                                 <img class="shahiImage" src="/icons8-user-48.png">
-                                </a>
                          </div>
                     </div>
                 </div>
@@ -120,11 +117,14 @@
 
                        <!-- <h1 style="width:70% ;" ><%-userName%></h1> -->
                       <div class="collapse" id="collapseExample">
-                        <div class="card card-body" style="margin-top:40%; display: flex; padding-bottom: 57%; margin-top: 57%; flex-direction: column;width: 106px;height: 100px;">
+                        <div class="card card-body" style="margin-top:40%; display: flex; padding-bottom: 57%; margin-top: 57%; flex-direction: column; width:112px; height:125px;">
                             <div class="seeFriendRequestParent" >
  <a class="seeFriendRequest" href="/api/friendrequest"><i class="bi bi-bell-fill"></i></a><span style="color: red; font-weight: 700;" ><%-seeRequest.length%></span>
       <a id="logOut" href="/api/auth/user/logOut"  style="color: black;text-align: center;text-decoration: none;"> logOut</a>
       <a id="block" href="/api/user/block/<%=recieverId%>"  style="color: black;text-align: center;text-decoration: none;">Block</a>
+      <a id="unFriend" href="/api/user/unFriend/<%=recieverId%>"> Unfriend
+        <!-- <img class="shahiImage" src="/icons8-user-48.png"> -->
+       </a>
                             </div>
                         </div>
                       </div>
@@ -142,6 +142,7 @@
                         <% if(showmessages[i].from === userId){%>
                         <div class="clip sent">
                             <div class="text"><%= showmessages[i].message%>
+                                <a class="hide" href="/api/conversation/message/edit/<%=showmessages[i].id%>">EDIT</a>
                                 <small class="timestampmsg">
                                     <%=showmessages[i].timeZone%>
                                 </small>
@@ -166,15 +167,10 @@
                         </div>
                         </div>
                         <% }%>
-
-                        <% } %> 
-                       
+                        <% } %>                        
                     </div>
             </div>
-
-
         </div>
-  
         <div class="bottom">
             <div class="cup">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIEAAACBCAMAAADQfiliAAAAZlBMVEX///8AAADk5OQiIiK0tLTX19d8fHzq6ura2trn5+f6+vpDQ0Py8vI3Nzfu7u4bGxsWFhbIyMgRERG9vb2np6eUlJRQUFBLS0tXV1cqKirR0dFjY2OcnJyMjIxcXFxqampycnKEhIQ2NWOsAAADuklEQVR4nO2b67qqIBCGww4aHshS81Tm/d/kTjlEy6UoOO5n74fvn2sVvMIwwMy021lZWf0Pwq5XOsHf6t1Lmj2iKpqDs3X3QZJdkSySJ1uOBU5CNFSY4K0A4t/67xniTfrH7Uj/ndoNhiGqJgAQqiJwgPskAEJ3aIQxE5CMARYgVwIglEMCpDMAEErhAMpZAAiVYAT+TAIfCuAwEwChAxDBXt010x4GIJ4NgBCMe34tIGggAIKruuOPIDzjkkmAmYbHIoIHAMH0nvhTz/UBcLaI4L7+mS1S74qyQnd1gnOxiKBY//DszPeInfaWwBJYAktgCSyBJbAElsASWAJLAE3gll5gRBB4pdH9rSbvO+jRgOB4R4jU+gAJbc3VJnDpQ6ILgAlt4KFNwKIeRDfmf2atvbQJePDrrEngstjVU4Og6DtlgfCrrjHy6FnWDeLC+EEfwcAsGXHVDajgC23A7wiCuUFlqnv3HcziLhft3E8hv8JzEUHVDyJ7KHQBRD6jt6rTIoK2+4rDHvRzHi1r4dY93BYRfH2l1SZI5BaiRQSB/AbaHknkVPrFsCik2Ue2+VIwyLmIGKLXPc1PcLBJ8NhDaBDm5q9No8QLCPrP80h0pQ8gDCHsp6GeDdDvhtwbGJjBZznRUQ3mBnbD3g7F4jE6rDSsEZo9m7sge16RmTPLt4g+acainQVAl7/IiNyMCLhjZpaAVXnvTnf6UT5l+i6ZitsiNa6dS5QAhG7FwmxN7LBTILqk8+CoEAi1OzEHxDjVIQaBUL9ynt6lfXocigSo6RC851Mk/Kkp7PDUJvlinxHr9rlCWcgn4d6w1pKxA9uevTBuxJ+O5gBymo+94c5tfwVozwMAg6uCrM8S9PkeE6U//WOYiv99LGWtcgzpkEpELhV7aR7Sg+QlzFNPzHf8WS3Fagm3WEo519LqipwyvsWlI+2+gbR9kRVrMeQNwZ9qt5TXqqE7HkdA2VhaO/7Ky64K8Ea4yI37yfAedk6+fNV1ZYD3+33fmfZVXUbc+nBU1tW3kygA0v/O0B2H1evUnl7V8OTiw1RMtoOOxqR/QVAonlcBMGqpKwjX6mKUaw1boxioStNS+HJVnIzPRbZRqep7S8iGGzTJpM1hAzm3RxVyL3UJq8dt84rlTvwmCVUIZwksgSWwBJbAEliCf4TAS09cPLySi7+kHjyAiCuNyDxupJCnAGBxeECpo9srBW5Gpa4dh6gXl6VOc0AvDKxKO/rgdwZn+idN+RbXhug4LvBftVlZWcHpD7ATMLL+x5COAAAAAElFTkSuQmCC"  style="width: 4%;height: 1%;" alt="">
@@ -212,7 +208,18 @@ if ( window.history.replaceState ) {
 //     menubar: false
 // });
 
-    const socket = io()
+const cookie = document.cookie.split("=")[1]
+const socket = io()
+// const socket = io.connect("'https://ecaa-122-168-233-60.in.ngrok.io'",{
+//     query:`token=${cookie}`,
+//     extraHeaders:{Authorization:`Bearer${cookie}`}
+// })
+
+//     const socket = io.connect('https://ecaa-122-168-233-60.in.ngrok.io', {
+//   query: `token=${your_jwt}`,
+//   extraHeaders : { Authorization: `Bearer ${your_jwt}`}
+//     });
+
     const mailDiv = document.getElementById('message')
 
 // socket.on("connection", ()=>{
@@ -220,12 +227,33 @@ if ( window.history.replaceState ) {
 // })
 
 socket.on('login',(data)=>{
-// console.log(data);
-// const users = document.getElementById(data.userId)
-// users.className = "online"
 socket.emit("login",data)
+// console.log(data);
+// users.className = "online"
+// socket.emit('disconnect',data)
 })
 
+socket.on('online',(data)=>{
+    // console.log("in online",data);
+    const onlineId = document.getElementById(`${data}online`)
+    onlineId.className = "online"
+    // console.log("in online",onlineId);
+})
+
+socket.on('offline',(data)=>{
+    console.log("offline",data);
+    const offlineId = document.getElementById(`${data}online`)
+    offlineId.className = ""
+    console.log(offlineId);
+});
+// socket.on('connect', () => {
+//   socket.emit('authenticate', { token: cookie }) //send the jwt
+// })
+
+
+socket.on('logOut',(data)=>{
+socket.emit('logOut',data)
+})
 
 socket.on("join-room",(conversationId)=>{
 

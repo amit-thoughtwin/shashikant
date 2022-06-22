@@ -169,3 +169,7 @@ export const searchFriendForFrontend = async (req, res, userId: any) => {
 
   return userData;
 };
+
+// export const isOnline = async () => {
+//  await users.update()
+// };

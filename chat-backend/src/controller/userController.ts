@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
@@ -273,17 +273,31 @@ export const signup = async (req: any, res:Response, next: NextFunction) => {
   return true;
 };
 
-export const logOut = (req: Request, res: Response) => {
+export const logOut = async (req: any, res: Response) => {
   try {
     const result = `${ngrokUrl}/api/auth/user/login`;
     const data = result.replace(/ /g, '');
-    return res.clearCookie('access_token').redirect(data);
+    const secretKey:any = process.env.SECRET_KEY;
+    const token = req.cookies.access_token;
+    await jwt.verify(token, secretKey, async (error: any, payload: any) => {
+      if (payload) {
+        console.log(payload.fullName);
+        req.id = payload.id;
+      }
+      const io = req.app.get('io');
+      io.emit('logOut', {
+        userId: req.id,
+      });
+
+      return res.clearCookie('access_token').redirect(data);
+    });
   } catch (e: any) {
     return res.json({
       statusCode: 400,
       msg: e.msg,
     });
   }
+  return true;
 };
 
 export const searchFriendForSpecificUser = async (

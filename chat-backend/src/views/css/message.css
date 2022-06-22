@@ -317,6 +317,10 @@ display: flex;
 .sent {
   flex-direction: row-reverse;
 }
+
+/* .sent > .text:hover{
+background-color: red;
+} */
 .seen {
   text-align: right;
   padding: 0 10px;
@@ -517,6 +521,14 @@ body {
   color: #ff7a59;
   background: #fff;
 }
+#unFriend{
+  color: #000000;
+}
+#unFriend:hover{
+  border: 3px dotted #ff7a59;
+  color: #ff7a59;
+  background: #fff;
+}
 
 #circle {
   height: 25px;
@@ -539,8 +551,23 @@ body {
 .block {
   flex-direction: row-reverse;
 }
+/* 
+ #edit:hover{
+display: inlineblock;
+} */
 
+.sent > .text:hover{
+display: block;
+cursor: pointer;
+} 
+.hide {
+  display: none;
+}
 
+.text:hover .hide {
+  display:inline-block;
+  color:blue;
+}
 
 /* #80877a */
 /* lawngreen; */
