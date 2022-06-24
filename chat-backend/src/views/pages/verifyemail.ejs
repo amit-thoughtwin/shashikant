@@ -13,7 +13,7 @@
       <h1 id="msg1"><%-msg%></h1>
       <h2>email verify</h2> 
       <form  action= "/api/auth/user/verifyEmail" method="post">
-        <input type="hidden" name="password" value="<%=password%>">
+        <input  type= "text" name="password" id="password" value="<%- password %>" >
         <div class="user-box">
         <input type="email" name="email"  />
         <label>email</label>

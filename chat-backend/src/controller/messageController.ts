@@ -53,6 +53,14 @@ export const sendMessage = async (
         },
       ],
     });
+
+    // const usersData = await users.findOne({
+    //   where: {
+    //     id: numberId,
+    //   },
+    // });
+    // console.log('ssssdsss', usersData.isOnline);
+
     if (!cheackFriend) {
       return next(new ApiError('you are not friend', 404));
     }
@@ -120,16 +128,15 @@ export const sendMessage = async (
         {
           model: users,
           as: 'reciever',
-          attributes: ['fullName', 'id'],
+          attributes: ['fullName', 'id', 'isOnline'],
         },
         {
           model: users,
           as: 'sender',
-          attributes: ['fullName', 'id'],
+          attributes: ['fullName', 'id', 'isOnline'],
         },
       ],
     });
-
     const { userData } = await getAllUser(userId);
 
     // await messages.update(
@@ -190,21 +197,8 @@ export const seeMessages = async (
     if (checkId === false) {
       return next(new ApiError('please put valid id ', 400));
     }
-
     const { userData } = await getAllUser(userId);
-    await messages.update(
-      { state: 'read' },
-      {
-        where: {
-          to: {
-            [Op.or]: [req.id, numberId],
-          },
-          from: {
-            [Op.or]: [req.id, numberId],
-          },
-        },
-      },
-    );
+
     const io = req.app.get('io');
     io.emit('seen-messages', {
       senderId: req.id,
@@ -224,15 +218,26 @@ export const seeMessages = async (
         {
           model: users,
           as: 'reciever',
-          attributes: ['fullName', 'id'],
+          attributes: ['fullName', 'id', 'isOnline'],
         },
         {
           model: users,
           as: 'sender',
-          attributes: ['fullName', 'id'],
+          attributes: ['fullName', 'id', 'isOnline'],
         },
       ],
     });
+
+    await messages.update(
+      { state: 'read' },
+      {
+        where: {
+          to: req.id,
+          from: numberId,
+        },
+      },
+    );
+
     messageData.forEach((element) => {
       let timeZone = '';
       if (element.createdAt.getHours() > 12) {
@@ -260,7 +265,6 @@ export const seeMessages = async (
         id: otherUser,
       },
     });
-
     return res.render('test', {
       data: userData,
       userId: loginId,
@@ -311,11 +315,14 @@ export const deleteChats = async (
       io.emit('delete', {
         messageId: id,
       });
-      await messages.destroy({
-        where: {
-          id,
+      await messages.update(
+        { isDeleted: true },
+        {
+          where: {
+            id,
+          },
         },
-      });
+      );
       return res.redirect(`/api/conversation/message/${recieverId}`);
       // return res.json({
       //   statusCode: 200,

@@ -195,7 +195,7 @@ export const sendFriendRequest = async (
 
 export const friendRequestAccept = async (
   req: any,
-  _: Response,
+  res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -240,8 +240,6 @@ export const friendRequestAccept = async (
       if (value === 'accepted' && match === true) {
         return next(new ApiError('already accepted ', 400));
       }
-
-      console.log('<<<');
       if (value === 'pending' && match === true) {
         await conversation.update(
           { state: 'accepted' },
@@ -258,10 +256,7 @@ export const friendRequestAccept = async (
         //   senderId: updateData.senderId,
         //   message: 'friend request is accepted you are not friend',
         // });
-
-        return next(
-          new ApiError('friend request is  accepted, you are now friend ', 200),
-        );
+        return res.redirect('/api/auth/user/searchFriend');
       }
     }
   } catch (e: any) {
@@ -272,7 +267,7 @@ export const friendRequestAccept = async (
 
 export const friendRequestReject = async (
   req: any,
-  _: Response,
+  res: Response,
   next: NextFunction,
 ) => {
   try {
@@ -314,8 +309,8 @@ export const friendRequestReject = async (
             senderId: numberId,
           },
         });
-
-        return next(new ApiError('friend request is  reject ', 200));
+        return res.redirect('/api/auth/user/searchFriend');
+        // return next(new ApiError('friend request is  reject ', 200));
       }
     }
   } catch (e: any) {
@@ -546,10 +541,7 @@ export const unFriend = async (req: any, res: Response, next: NextFunction) => {
             recieverId: { [Op.or]: [req.id, numberId] },
           },
         });
-        return res.json({
-          statusCode: 200,
-          message: 'you are now unfriend',
-        });
+        return res.redirect('/api/auth/user/searchFriend');
       }
     }
   } catch (e: any) {

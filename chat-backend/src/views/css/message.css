@@ -607,3 +607,22 @@ font-size: x-large;
 #delete:hover{
   cursor: pointer;
 }
+
+#deleteForEveryOne{
+  background-color: #6f6c6d;
+  /* width: 14%;
+  padding-top: 6px;
+  padding-left: 7px;
+  height: 38px;
+  border-radius: 12%; */
+}
+
+#deleteForEveryOne span{
+  color: #fff;
+  padding-left: 10px;
+  
+}
+
+#deleteForEveryOne i{
+  padding-left: 10px;
+}

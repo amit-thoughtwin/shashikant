@@ -99,7 +99,6 @@ io.on('connection', async (socket) => {
     }
   });
   socket.on('logOut', async (data) => {
-    console.log('i am logout >?????????????', data);
     await users.update({
       isOnline: false,
     }, {
@@ -115,6 +114,7 @@ io.on('connection', async (socket) => {
   socket.on('stopTyping', (msg) => {
     io.emit('stopTyping', msg);
   });
+
   socket.on('chat-message', (data) => {
     const {
       msg, conversationId, userId, recieverId,

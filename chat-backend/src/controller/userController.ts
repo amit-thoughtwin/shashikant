@@ -188,6 +188,7 @@ export const signup = async (req: any, res:Response, next: NextFunction) => {
           password: passwordTrim,
         });
       }
+
       if (verified === true) {
         if (findData.fullName === null) {
           const { fullName }: { fullName: string } = req.body;

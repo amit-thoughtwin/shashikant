@@ -18,10 +18,8 @@ export const tokenVarify = async (
     const secretKey: any = process.env.SECRET_KEY;
     const token: any = req.cookies.access_token;
     if (!token) {
-      return res.status(400).json({
-        message: 'A token is required for authentication',
-        status: 400,
-        success: false,
+      res.render('login', {
+        msg: ' ',
       });
     }
     // const authHeader: any = req.headers.authorization;
@@ -44,11 +42,12 @@ export const tokenVarify = async (
       return true;
     });
   } catch (e: any) {
-    return res.json({
-      success: false,
-      statusCode: 400,
-      message: e.message,
-    });
+    console.log(e);
+    // return res.json({
+    //   success: false,
+    //   statusCode: 400,
+    //   message: e.message,
+    // });
   }
   return true;
 };
@@ -86,6 +85,8 @@ export const sendMail = async (req: Request, res: Response, html: any) => {
 
 export const userVerifiedEmail = async (req: Request, res: Response) => {
   try {
+    console.log('<<<userVerifiedEmail');
+
     const { email, otp, password } = req.body;
     const emailTrim = email.trim();
     const otpTrim = otp.trim();

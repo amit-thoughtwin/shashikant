@@ -189,3 +189,10 @@ body {
 #msg1 {
   color: aliceblue;
 }
+#password{
+  margin-bottom: 0px;
+  background-color: transparent;
+  border: none;
+  color: transparent;
+  outline: none;
+}
