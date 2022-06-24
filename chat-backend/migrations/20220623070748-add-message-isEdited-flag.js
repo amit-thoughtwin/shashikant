@@ -1,0 +1,7 @@
+module.exports = {
+  up: (queryInterface, Sequelize) => queryInterface.addColumn('messages', 'isEdited', {
+    type: Sequelize.DataTypes.BOOLEAN,
+    defaultValue: false,
+  }),
+  down: (queryInterface) => queryInterface.dropTable('messages'),
+};

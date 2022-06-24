@@ -145,6 +145,7 @@ export const userVerifiedEmail = async (req: Request, res: Response) => {
   }
   return true;
 };
+
 export const pageNotFound = async (req: Request, res: Response) => {
   try {
     res.render('404');

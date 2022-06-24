@@ -304,13 +304,14 @@ display: flex;
 }
 .received > .text {
   background-color: #fff;
-  border-radius: 3px;
+  border-radius: 10px;
   color: #000000;
   padding: 3px 15px;
   /* border: 0.5px solid #80808080; */
 }
 .sent > .text {
   background-color: #dafdbc;
+  border-radius: 10px;
   color: #100f0f;
   padding: 3px 15px;
 }
@@ -565,9 +566,44 @@ cursor: pointer;
 }
 
 .text:hover .hide {
-  display:inline-block;
-  color:blue;
+  display:inline;
+  color:rgb(6, 6, 9);
 }
 
+#messageHide{
+  border: none;
+}
 /* #80877a */
 /* lawngreen; */
+
+
+
+#edited-recieved{
+  font-size: 80%;
+  font-weight: 400;
+  color: red;
+  float: left;
+}
+#edited-send{
+  font-size: 80%;
+  font-weight: 400;
+  color: red;
+  float: right;
+}
+
+.mike{
+  border: none;
+  background-color: transparent;
+}
+.mike:hover{
+  cursor: pointer;
+}
+.mike #mikeIcon{
+font-size: x-large;
+}
+#delete{
+  text-decoration: none;
+}
+#delete:hover{
+  cursor: pointer;
+}

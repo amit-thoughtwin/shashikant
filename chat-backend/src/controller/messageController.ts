@@ -286,6 +286,7 @@ export const deleteChats = async (
 ) => {
   try {
     const { id } = req.params;
+    const { recieverId } = req.query;
     const numberId: any = id.replace(/[' "]+/g, '');
     const checkId = validate(numberId);
     if (checkId === false) {
@@ -294,16 +295,10 @@ export const deleteChats = async (
     const messageData = await messages.findOne({
       where: {
         id: numberId,
-        [Op.or]: [
-          {
-            to: req.id,
-          },
-          {
-            from: req.id,
-          },
-        ],
+
       },
     });
+
     if (!messageData) {
       return res.json({
         statusCode: 404,
@@ -311,16 +306,21 @@ export const deleteChats = async (
       });
     }
     if (messageData) {
-      const { conversationId } = messageData.dataValues;
+      // const { conversationId } = messageData.dataValues;
+      const io = req.app.get('io');
+      io.emit('delete', {
+        messageId: id,
+      });
       await messages.destroy({
         where: {
-          conversationId,
+          id,
         },
       });
-      return res.json({
-        statusCode: 200,
-        message: 'chat deleted successfully',
-      });
+      return res.redirect(`/api/conversation/message/${recieverId}`);
+      // return res.json({
+      //   statusCode: 200,
+      //   message: 'chat deleted successfully',
+      // });
     }
   } catch (e: any) {
     return next(new ApiError(e.message, 400));
@@ -376,11 +376,15 @@ export const editmessage = async (
 ) => {
   try {
     const { id } = req.params;
+    const { recieverId } = req.query;
+    // const loginId = req.id;
+    // const userId = req.id;
     const numberId: any = id.replace(/[' "]+/g, '');
     const checkId = validate(numberId);
     if (checkId === false) {
       return next(new ApiError('please put valid id ', 400));
     }
+    // const { userData } = await getAllUser(userId);
     const { message }: { message: string } = req.body;
     if (!message) {
       return res.json({
@@ -398,49 +402,111 @@ export const editmessage = async (
 
     const messageData = await messages.findOne({
       where: {
-        to: {
-          [Op.or]: [numberId, req.id],
-        },
-        from: {
-          [Op.or]: [numberId, req.id],
-        },
+        id: numberId,
       },
     });
+
     if (!messageData) {
       return res.json({
         statusCode: 400,
         message: 'no chat found',
       });
     }
-    const messageId = messageData.from;
-    if (messageId !== req.id) {
-      return res.json({
-        statusCode: 400,
-        message: 'you can not edit message',
-      });
-    }
+    // const messageId = messageData.from;
+    // if (messageId !== req.id) {
+    //   return res.json({
+    //     statusCode: 400,
+    //     message: 'you can not edit message',
+    //   });
+    // }
+    console.log(numberId);
+
     await messages.update(
       {
         message: messageTrim,
         state: 'edited',
+        isEdited: true,
       },
       {
         where: {
-          from: req.id,
+          id: numberId,
         },
       },
     );
+    const io = req.app.get('io');
+    io.emit('edit', {
+      messageId: numberId,
+      message: messageTrim,
+      status: 'edited',
+    });
 
+    return res.redirect(`/api/conversation/message/${recieverId}`);
+    // const messagesData = await messages.findAll({
+    //   where: {
+    //     to: {
+    //       [Op.or]: [recieverId, req.id],
+    //     },
+    //     from: {
+    //       [Op.or]: [recieverId, req.id],
+    //     },
+    //   },
+    //   order: [['createdAt', 'ASC']],
+    //   include: [
+    //     {
+    //       model: users,
+    //       as: 'reciever',
+    //       attributes: ['fullName', 'id'],
+    //     },
+    //     {
+    //       model: users,
+    //       as: 'sender',
+    //       attributes: ['fullName', 'id'],
+    //     },
+    //   ],
+    // });
+    // messagesData.forEach((element) => {
+    //   let timeZone = '';
+    //   if (element.createdAt.getHours() > 12) {
+    //     timeZone += `${element.createdAt.getHours()}:${element.createdAt.getMinutes()}pm`;
+    //   } else {
+    //     timeZone += `${element.createdAt.getHours()}:${element.createdAt.getMinutes()}am`;
+    //     // timeZone = "am"
+    //   }
+    //   element.timeZone = timeZone;
+    //   //  timeZone = ""
+    //   return element;
+    // });
+    // const user = await users.findOne({
+    //   where: {
+    //     id: recieverId,
+    //   },
+    // });
+    // console.log(messagesData);
+
+    // const io = req.app.get('io');
     // io.emit('edit', {
-    //   userId: req.id,
+    //   messageId: numberId,
     //   message: messageTrim,
     //   status: 'edited',
     // });
+    // return res.render('test', {
+    //   data: userData,
+    //   userId: loginId,
+    //   conversationId: '',
+    //   userName: req.fullName,
+    //   chatWith: user.fullName,
+    //   friendRequest: '',
+    //   seeRequest: '',
+    //   message: '',
+    //   showmessages: messagesData,
+    //   sendMessage: '',
+    //   recieverId,
+    // });
 
-    return res.json({
-      statusCode: 200,
-      message: 'message edited successfully',
-    });
+    // return res.json({
+    //   statusCode: 200,
+    //   message: 'message edited successfully',
+    // });
   } catch (e: any) {
     return res.json({
       statusCode: 400,

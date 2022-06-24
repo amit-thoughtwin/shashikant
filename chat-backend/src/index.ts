@@ -53,43 +53,50 @@ server.listen(port, async () => {
 io.on('connection', async (socket) => {
   let UserId: any;
   const token:any = socket.handshake.headers.cookie;
-  const myToken = token.split('=')[1];
+  if (token) {
+    const myToken = token.split('=')[1];
 
-  await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
-    if (payload) {
-      UserId = payload.id;
-    }
-  });
-  console.log('connect');
-  await users.update({
-    isOnline: true,
-  }, {
-    where: {
-      id: UserId,
-    },
-  });
-  socket.broadcast.emit('online', UserId);
+    await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
+      if (payload) {
+        UserId = payload.id;
+      }
+    });
+
+    console.log('connect');
+    await users.update({
+      isOnline: true,
+    }, {
+      where: {
+        id: UserId,
+      },
+    });
+    socket.broadcast.emit('online', UserId);
+  }
   // socket.emit('online', UserId);
   // io.on('authenticated', (socket) => {
   //   console.log(socket.my_decoded_token); // new decoded token
   // });
 
   socket.on('disconnect', async () => {
-    await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
-      if (payload) {
-        UserId = payload.id;
-      }
-    });
-    console.log('disconnect', UserId);
+    if (token) {
+      const myToken = token.split('=')[1];
 
-    await users.update({
-      isOnline: false,
-    }, {
-      where: {
-        id: UserId,
-      },
-    });
-    socket.broadcast.emit('offline', UserId);
+      await jwt.verify(myToken, secretKey, async (error: any, payload: any) => {
+        if (payload) {
+          UserId = payload.id;
+        }
+      });
+      console.log('disconnect', UserId);
+
+      await users.update({
+        isOnline: false,
+      }, {
+        where: {
+          id: UserId,
+        },
+      });
+      socket.broadcast.emit('offline', UserId);
+    }
   });
   socket.on('logOut', async (data) => {
     console.log('i am logout >?????????????', data);

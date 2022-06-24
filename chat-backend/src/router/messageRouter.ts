@@ -21,8 +21,8 @@ messageRoutes.get('/conversation/chat', (_, res: Response) => {
   res.render('message');
 });
 messageRoutes.get('/conversation/message/:id', tokenVarify, seeMessages);
-messageRoutes.delete('/conversation/message/:id', tokenVarify, deleteChats);
-messageRoutes.get('/conversation/message/edit/:id', tokenVarify, editmessage);
+messageRoutes.get('/conversation/message/delete/:id', tokenVarify, deleteChats);
+messageRoutes.post('/conversation/message/edit/:id', tokenVarify, editmessage);
 
 messageRoutes.delete(
   '/conversation/message/allchat/:id',

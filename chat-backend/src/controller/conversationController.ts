@@ -82,11 +82,14 @@ export const sendFriendRequest = async (
         });
       }
       if (status === 'accepted') {
+        console.log('LLLLLLLLLLLLLLL');
+
         return res.render('test', {
           data: [],
           userId: req.id,
           conversationId: '',
           chatWith: '',
+          userName: req.fullName,
           seeRequest: '',
           message: '',
           showmessages: [],
